@@ -3,6 +3,8 @@
  * Controller handling health checks and API status.
  */
 
+const { getStatusDetails } = require('../services/status.service');
+
 /**
  * @desc    Get API Status / Health Check
  * @route   GET /api/status
@@ -10,14 +12,7 @@
  */
 const getStatus = (req, res, next) => {
   try {
-    const statusInfo = {
-      status: 'ok',
-      message: 'API is running successfully (Reloaded)',
-      timestamp: new Date().toISOString(),
-      uptime: `${process.uptime().toFixed(2)}s`,
-      environment: process.env.NODE_ENV || 'development'
-    };
-    
+    const statusInfo = getStatusDetails();
     return res.status(200).json(statusInfo);
   } catch (error) {
     // Passes any unexpected errors to the global error handler middleware
