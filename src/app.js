@@ -9,6 +9,7 @@ const morgan = require('morgan');
 
 // Import routes
 const statusRoutes = require('./routes/status.routes');
+const authRoutes = require('./routes/auth.routes');
 
 // Import middlewares
 const { errorHandler, notFoundHandler } = require('./middlewares/error.middleware');
@@ -30,6 +31,7 @@ if (process.env.NODE_ENV === 'development') {
 
 // API Base Routes
 app.use('/api/status', statusRoutes);
+app.use('/api/auth', authRoutes);
 
 // Catch-all 404 handler for any undefined route
 app.use(notFoundHandler);
