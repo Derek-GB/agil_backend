@@ -4,12 +4,12 @@
  */
 
 const jwt = require('jsonwebtoken');
-const { users } = require('../services/auth.service');
+const db = require('../config/db.config');
 
 /**
  * Protects route endpoints ensuring only authenticated users with valid JWTs can proceed
  */
-const protect = (req, res, next) => {
+const protect = async (req, res, next) => {
   let token;
 
   // Check for token in Authorization header (standard: "Bearer <Token>")
@@ -25,8 +25,10 @@ const protect = (req, res, next) => {
       const secret = process.env.JWT_SECRET || 'supersecretfallback';
       const decoded = jwt.verify(token, secret);
 
-      // Find the user in mock DB to ensure the user still exists
-      const user = users.find(u => u.id === decoded.id);
+      // Query the database to ensure the user still exists
+      const [rows] = await db.execute('CALL sp_obtener_usuario_por_email(?)', [decoded.email]);
+      const user = rows[0][0];
+
       if (!user) {
         return res.status(401).json({
           status: 'error',
@@ -35,7 +37,7 @@ const protect = (req, res, next) => {
       }
 
       // Attach user details to request object (excluding password)
-      const { password: _, ...userWithoutPassword } = user;
+      const { password_hash: _, ...userWithoutPassword } = user;
       req.user = userWithoutPassword;
 
       // Move to the next middleware/controller
