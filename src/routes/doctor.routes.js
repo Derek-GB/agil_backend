@@ -3,7 +3,7 @@ const router = express.Router();
 const doctorController = require('../controllers/doctor.controller');
 const { protect } = require('../middlewares/auth.middleware');
 
-router.get('/', doctorController.getDoctores);
+router.get('/all', doctorController.getDoctores);
 router.get('/:id', doctorController.getDoctorById);
 router.post('/', protect, doctorController.createDoctor);
 router.put('/:id', protect, doctorController.updateDoctor);
