@@ -1,22 +1,19 @@
 /**
  * src/config/db.config.js
- * Database connection setup.
- * Replace with Mongoose connection, pg-pool, or Sequelize initialization as needed.
+ * Database connection pool using mysql2/promise.
  */
 
-const connectDatabase = async () => {
-  try {
-    // If you are using MongoDB / Mongoose:
-    // const mongoose = require('mongoose');
-    // const conn = await mongoose.connect(process.env.DATABASE_URL);
-    // console.log(`💾 Database Connected: ${conn.connection.host}`);
-    
-    // Placeholder database connection logic
-    console.log('💾 Database connection initialized (Placeholder).');
-  } catch (error) {
-    console.error(`💥 Database connection error: ${error.message}`);
-    process.exit(1);
-  }
-};
+const mysql = require('mysql2/promise');
 
-module.exports = connectDatabase;
+const pool = mysql.createPool({
+  host: process.env.DB_HOST || 'localhost',
+  user: process.env.DB_USER || 'root',
+  password: process.env.DB_PASSWORD || '',
+  database: process.env.DB_NAME || 'clinicadb',
+  port: process.env.DB_PORT ? parseInt(process.env.DB_PORT, 10) : 3306,
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0
+});
+
+module.exports = pool;

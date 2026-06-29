@@ -32,6 +32,8 @@ if (process.env.NODE_ENV === 'development') {
 // API Base Routes
 app.use('/api/status', statusRoutes);
 app.use('/api/auth', authRoutes);
+app.use('/api/pacientes', require('./routes/paciente.routes'));
+app.use('/api/doctores', require('./routes/doctor.routes'));
 
 // Catch-all 404 handler for any undefined route
 app.use(notFoundHandler);
